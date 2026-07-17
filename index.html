@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASHLY Y ALBERTO</title>
+
+    <!-- Fuentes de la Invitación -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Fuente para Reproductor de Música y Cuenta Regresiva -->
+    <link rel="preconnect" href="https://fonts.cdnfonts.com">
+    <link href="https://fonts.cdnfonts.com/css/ss-abigail" rel="stylesheet">
+    
+    <style>
+        @font-face { 
+            font-family: 'Mongolian Baiti'; 
+            src: url('Mongolian Baiti.ttf') format('truetype'); 
+        }
+
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: #ffffff; 
+            font-family: 'Georgia', serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            width: 100%; 
+            overflow-x: hidden; 
+        }
+        
+        .main-container { 
+            width: 100%; 
+            max-width: 480px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            background-color: #ffffff; 
+        }
+        
+        .img-container { 
+            width: 100%; 
+            line-height: 0; 
+            font-size: 0; 
+        }
+        
+        .img-container img { 
+            width: 100%; 
+            display: block; 
+        }
+
+        /* --- Estilos del Reproductor de Música --- */
+        .music-section {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+            box-sizing: border-box;
+        }
+
+        .player {
+            width: 270px;
+            padding: 14px 10px;
+            font-family: 'SS Abigail', cursive;
+            color: #63152D;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .line {
+            flex: 1;
+            height: 2px;
+            background: rgba(99,21,45,.25);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: #63152D;
+            transition: .2s linear;
+        }
+
+        .play {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid #63152D;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .play:hover {
+            background: #8A2A46;
+        }
+
+        .play svg {
+            width: 14px;
+            height: 14px;
+            fill: #63152D;
+        }
+
+        audio {
+            display: none;
+        }
+
+        /* --- Estilos de la Cuenta Regresiva --- */
+        .countdown-section {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 30px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .countdown-section section {
+            text-align: center;
+            font-family: 'SS Abigail', serif;
+        }
+
+        .countdown {
+            display: flex;
+            gap: 38px;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .block {
+            text-align: center;
+            position: relative;
+        }
+
+        .number {
+            font-size: 58px;
+            color: #63152D;
+            line-height: 1;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px rgba(99,21,45,0.15);
+        }
+
+        .block::after {
+            content: "";
+            display: block;
+            width: 36px;
+            height: 1px;
+            background: #63152D;
+            margin: 8px auto 6px;
+            opacity: .35;
+        }
+
+        .label {
+            font-size: 12px;
+            letter-spacing: 3px;
+            color: #63152D;
+        }
+
+        @media(max-width:600px){
+            .countdown { gap: 20px; }
+            .number { font-size: 40px; }
+            .label { font-size: 10px; }
+        }
+
+        /* --- Estilos de Ubicaciones --- */
+        .ubicaciones-wrapper { 
+            position: relative; 
+            width: 100%; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #ffffff;
+            padding-bottom: 20px;
+        }
+
+        .btn-guinda { 
+            display: block; 
+            background-color: #63152D; 
+            color: #ffffff; 
+            text-decoration: none; 
+            font-family: 'Cinzel', sans-serif; 
+            font-size: 14px; 
+            padding: 14px 0; 
+            border-radius: 25px; 
+            text-align: center; 
+            width: 55%; 
+            margin-top: -20px; 
+            margin-bottom: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
+            font-weight: bold;
+            z-index: 10;
+            transition: background-color 0.3s;
+        }
+
+        .btn-guinda:hover {
+            background-color: #8A2A46;
+        }
+
+        /* Espaciado extra modificado para bajar el botón de hospedaje */
+        .hospedaje-container .btn-guinda {
+            margin-top: 15px; 
+            margin-bottom: 35px;
+        }
+
+        /* --- Galería de Fotos Optimizada --- */
+        .gallery-section { 
+            width: 100%; 
+            background-color: #ffffff; 
+            padding: 30px 0; 
+            text-align: center; 
+        }
+        
+        .gallery-title { 
+            color: #63152D; 
+            font-family: 'Cinzel', serif; 
+            font-size: 24px; 
+            font-weight: 400; 
+            margin-bottom: 25px; 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+        }
+        
+        .slider-container { 
+            position: relative; 
+            width: 90%; 
+            height: 520px; 
+            margin: 0 auto; 
+            overflow: hidden; 
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .slider-container img { 
+            position: absolute; 
+            inset: 0; 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            opacity: 0; 
+            transition: opacity 1.2s ease-in-out; 
+            will-change: opacity;
+        }
+        
+        .slider-container img.active { opacity: 1; }
+
+        /* --- Formulario Estilo Guinda Elegante --- */
+        .form-section { 
+            width: 100%; 
+            padding: 20px; 
+            box-sizing: border-box; 
+            background-color: transparent; 
+            margin-bottom: 40px;
+        }
+
+        .container-form { 
+            max-width: 350px; 
+            margin: auto; 
+        }
+        
+        label.titulo-form { 
+            display: block; 
+            margin-top: 25px; 
+            font-family: 'Cinzel', serif; 
+            font-weight: 700; 
+            font-size: 15px; 
+            margin-bottom: 10px; 
+            color: #63152D;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"], textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid rgba(99, 21, 45, 0.4); 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            background-color: #fafafa; 
+            margin-bottom: 5px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #63152D;
+        }
+
+        .opciones { 
+            margin-top: 10px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+        }
+        
+        .opcion-item { 
+            display: flex; 
+            align-items: center; 
+            cursor: pointer; 
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            color: #4a4a4a;
+        }
+
+        .opcion-item input { 
+            margin-right: 12px; 
+            width: 18px; 
+            height: 18px; 
+            accent-color: #63152D; 
+        }
+
+        /* Botón Enviar Rediseñado */
+        .btn-enviar-guinda { 
+            background-color: #63152D; 
+            color: #ffffff; 
+            padding: 15px; 
+            border: none; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            width: 100%; 
+            margin-top: 35px; 
+            font-size: 14px; 
+            font-family: 'Cinzel', serif;
+            font-weight: 700; 
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            box-shadow: 0 4px 10px rgba(99, 21, 45, 0.3);
+            transition: all 0.3s ease; 
+        }
+
+        .btn-enviar-guinda:hover { 
+            background-color: #8A2A46;
+            box-shadow: 0 6px 14px rgba(99, 21, 45, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-enviar-guinda.cargando {
+            background-color: #C79AA7 !important;
+            color: #63152D !important; 
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        #exito-guinda { 
+            display: none; 
+            text-align: center; 
+            padding: 40px 5px; 
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        #exito-guinda h3 { 
+            color: #63152D; 
+            font-size: 18px; 
+            line-height: 1.6;
+            font-family: 'Cinzel', serif;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <!-- Portada de la invitación -->
+        <div class="img-container"><img src="portada.jpg" alt="PORTADA"></div>
+
+        <!-- REPRODUCTOR DE MÚSICA (Fondo Blanco) -->
+        <div class="music-section">
+            <div class="player">
+                <div class="title">Escucha mi canción</div>
+                <div class="controls">
+                    <div class="line">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <button class="play" onclick="togglePlay()">
+                        <svg id="icon" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    </button>
+                    <div class="line"></div>
+                </div>
+                <audio id="audio">
+                    <source src="https://regalalasestrellas.weebly.com/uploads/1/3/2/0/132094004/mrs_magic_-_strawberry_guy__piano_version___mp3cut.net_.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+        </div>
+
+        <!-- Bloque de imágenes intermedias -->
+        <div class="img-container"><img src="entrada.jpg" alt="ENTRADA"></div>
+        <div class="img-container"><img src="papas y padrinos.jpg" alt="PAPÁS Y PADRINOS"></div>
+        <div class="img-container"><img src="titulo.jpg" alt="TÍTULO"></div>
+        <div class="img-container"><img src="fecha.jpg" alt="FECHA"></div>
+
+        <!-- CUENTA REGRESIVA (Fondo Blanco) -->
+        <div class="countdown-section">
+            <section>
+                <div class="countdown">
+                    <div class="block">
+                        <div id="days" class="number">00</div>
+                        <div class="label">DÍAS</div>
+                    </div>
+                    <div class="block">
+                        <div id="hours" class="number">00</div>
+                        <div class="label">HORAS</div>
+                    </div>
+                    <div class="block">
+                        <div id="minutes" class="number">00</div>
+                        <div class="label">MINUTOS</div>
+                    </div>
+                    <div class="block">
+                        <div id="seconds" class="number">00</div>
+                        <div class="label">SEGUNDOS</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- SECCIÓN DE LA CEREMONIA -->
+        <div class="ubicaciones-wrapper">
+            <div class="img-container"><img src="ceremonia.jpg" alt="CEREMONIA"></div>
+            <a href="https://www.google.com/maps/place/Parroquia+El+Buen+Pastor/@28.6828369,-106.1232412,17z/data=!3m1!4b1!4m6!3m5!1s0x86ea425aac67dc39:0xf9353a0fe4462a4c!8m2!3d28.6828369!4d-106.1232412!16s%2Fg%2F1vrqb281?entry=ttu&g_ep=EgoyMDI2MDMwMi4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="btn-guinda">VER EN MAPA</a>
+        </div>
+
+        <!-- SECCIÓN DE LA RECEPCIÓN -->
+        <div class="ubicaciones-wrapper">
+            <div class="img-container"><img src="recepcion.jpg" alt="RECEPCIÓN"></div>
+            <a href="https://www.google.com/maps/place/Sal%C3%B3n+LC/@28.7326529,-106.1209925,17z/data=!3m1!4b1!4m6!3m5!1s0x86ea41130ca4331f:0x328ac12ff919f6a0!8m2!3d28.7326529!4d-106.1209925!16s%2Fg%2F11h_fqtpwm?entry=ttu&g_ep=EgoyMDI2MDMwMi4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="btn-guinda">VER EN MAPA</a>
+        </div>
+
+        <!-- SECCIÓN VESTIMENTA -->
+        <div class="img-container"><img src="vestimenta.jpg" alt="VESTIMENTA"></div>
+
+        <!-- NUEVA UBICACIÓN: GALERÍA DE FOTOS (Justo debajo de Vestimenta con tus nuevos enlaces) -->
+        <div class="gallery-section">
+            <div class="gallery-title">NUESTRA GALERÍA</div>
+            <div class="slider-container">
+                <img src="https://i.imgur.com/7t1qNGR.jpeg" class="active" loading="eager">
+                <img src="https://i.imgur.com/6ODI2Nh.jpeg" loading="lazy">
+                <img src="https://i.imgur.com/VrlVrZJ.jpeg" loading="lazy">
+                <img src="https://i.imgur.com/LTbVBLc.jpeg" loading="lazy">
+                <img src="https://i.imgur.com/4i3wOgz.jpeg" loading="lazy">
+                <img src="https://i.imgur.com/RDjga40.jpeg" loading="lazy">
+            </div>
+        </div>
+
+        <!-- SECCIÓN ITINERARIO (Corregido nombre de archivo y ubicado abajo de la Galería) -->
+        <div class="img-container"><img src="itinerario.jpg" alt="ITINERARIO"></div>
+
+        <!-- SECCIÓN REGALOS -->
+        <div class="img-container"><img src="regalos.jpg" alt="Regalos"></div>
+        <div class="img-container"><img src="sugerencia de regalo.jpg" alt="Sugerencia de Regalo"></div>
+        
+        <!-- SECCIÓN HOSPEDAJE (Con botón más abajo) -->
+        <div class="ubicaciones-wrapper hospedaje-container">
+            <div class="img-container"><img src="hospedaje.jpg" alt="Hospedaje"></div>
+            <a href="https://www.google.com/maps?sca_esv=454c728905f0b91c&rlz=1C1CHBF_esMX838MX838&output=search&q=DOUBLETREE+BY+HILTON+-NORWALK+13111+Sycamore+Drive+Norwalk+CA.+90650&source=lnms&fbs=AIIjpHx4nJjfGojPVHhEACUHPiMQ888Yp7kQAgn2suUAOWN4gr_S9GlBEYq0W4Xv3oU6cIu_DZzwnkPPHty58iYDOubjCCM_ONoOxZbfM1AT1LJi_PTUmLxALXEzWGoUfIH-rRVG4rVdheo8_OsYL6fDmMp9QqDtkKBbUOvvawNIylT-_6g2CcU4MOWA4vNPtUmnbibXuEnyhEbsPamMuGcv1h-nCRicCw&entry=mc&ved=1t:200715&ictx=111" target="_blank" class="btn-guinda">VER UBICACIÓN</a>
+        </div>
+
+        <!-- CONFIRMACIÓN Y FORMULARIO -->
+        <div class="img-container"><img src="confirmacion.jpg" alt="Confirmación"></div>
+
+        <div class="form-section">
+            <div class="container-form">
+                <div id="formContent">
+                    <form id="rsvpForm">
+                        <label class="titulo-form">Nombre del invitado</label>
+                        <input type="text" name="nombre" placeholder="Escribe tu nombre aquí" required>
+
+                        <label class="titulo-form">¿Asistirás?</label>
+                        <div class="opciones">
+                            <label class="opcion-item">
+                                <input type="radio" name="asistencia" value="Será un placer asistir" checked> Será un placer asistir
+                            </label>
+                            <label class="opcion-item">
+                                <input type="radio" name="asistencia" value="Lo siento, no podré asistir"> Lo siento, no podré asistir
+                            </label>
+                        </div>
+
+                        <label class="titulo-form">Mensaje o dedicatoria (Opcional)</label>
+                        <textarea name="mensaje" rows="4" placeholder="Escribe un mensaje para los novios..."></textarea>
+
+                        <button type="submit" class="btn-enviar-guinda" id="btn">ENVIAR CONFIRMACIÓN</button>
+                    </form>
+                </div>
+
+                <div id="exito-guinda">
+                    <h3>¡Muchas gracias!<br>Tu respuesta ha sido enviada con éxito.</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Lógica del Reproductor de Música ---
+            const audio = document.getElementById("audio");
+            const icon = document.getElementById("icon");
+            const progress = document.getElementById("progress");
+
+            window.togglePlay = function() {
+                if(audio.paused){
+                    audio.play();
+                    icon.innerHTML = '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';
+                }else{
+                    audio.pause();
+                    icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+                }
+            }
+
+            audio.addEventListener("timeupdate", ()=>{
+                const percent = (audio.currentTime / audio.duration) * 100;
+                progress.style.width = percent + "%";
+            });
+
+            // --- Lógica de la Cuenta Regresiva ---
+            const DATE_TARGET = new Date('04/25/2026 19:00:00');
+
+            const days = document.getElementById('days');
+            const hours = document.getElementById('hours');
+            const minutes = document.getElementById('minutes');
+            const seconds = document.getElementById('seconds');
+
+            const MS = 1000;
+            const MIN = MS * 60;
+            const H = MIN * 60;
+            const D = H * 24;
+
+            function format(n){
+                return n < 10 ? '0' + n : n;
+            }
+
+            function updateCountdown(){
+                const now = new Date();
+                let dur = DATE_TARGET - now;
+                if(dur < 0) dur = 0;
+
+                days.textContent = Math.floor(dur / D);
+                hours.textContent = format(Math.floor((dur % D) / H));
+                minutes.textContent = format(Math.floor((dur % H) / MIN));
+                seconds.textContent = format(Math.floor((dur % MIN) / MS));
+            }
+
+            updateCountdown();
+            setInterval(updateCountdown, MS);
+
+            // --- Lógica de la Galería de Imágenes ---
+            const images = document.querySelectorAll('.slider-container img');
+            let current = 0;
+            setInterval(() => {
+                images[current].classList.remove('active');
+                current = (current + 1) % images.length;
+                images[current].classList.add('active');
+            }, 3000);
+
+            // --- Lógica del Formulario Conectado a Google Sheets ---
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbyOA-lriysokaQP8kshAD42tFQG9pFv4uOg5HgfSRJ0Z9P3ps7JtNCq1U-J1-IKdmun/exec';
+            const form = document.getElementById('rsvpForm');
+            const btn = document.getElementById('btn');
+
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                
+                btn.disabled = true;
+                btn.innerText = 'Enviando...';
+                btn.classList.add('cargando');
+
+                fetch(scriptURL, { 
+                    method: 'POST', 
+                    body: new FormData(form),
+                    mode: 'no-cors'
+                })
+                .then(() => {
+                    document.getElementById('formContent').style.display = 'none';
+                    document.getElementById('exito-guinda').style.display = 'block';
+                })
+                .catch(error => {
+                    alert('Hubo un error al enviar.');
+                    btn.disabled = false;
+                    btn.innerText = 'ENVIAR CONFIRMACIÓN';
+                    btn.classList.remove('cargando');
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
