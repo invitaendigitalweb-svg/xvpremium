@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALONDRA XV</title>
+    <title>ALONDRA</title>
 
     <!-- Fuentes de la Invitación -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
@@ -14,22 +14,42 @@
     <link href="https://fonts.cdnfonts.com/css/ss-abigail" rel="stylesheet">
     
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         @font-face { 
             font-family: 'Mongolian Baiti'; 
             src: url('Mongolian Baiti.ttf') format('truetype'); 
         }
 
-        body { 
-            margin: 0; 
-            padding: 0; 
-            background-color: #ffffff; 
-            font-family: 'Georgia', serif; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
+        html, body { 
             width: 100%; 
-            overflow-x: hidden; 
+            height: 100%; 
+            overflow: hidden; 
+            background-color: #FDFBF7; 
+            font-family: 'Georgia', serif; 
+            text-align: center;
         }
+
+        /* SOBRE CREMA INTERACTIVO */
+        .fullscreen-wrapper { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; z-index: 1; }
+        .envelope-container { position: absolute; width: 100%; height: 100%; background-color: #FDFBF7; cursor: pointer; display: flex; justify-content: center; align-items: center; perspective: 1500px; z-index: 10; }
+        .flap { position: absolute; left: 0; width: 0; height: 0; border-style: solid; transition: transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94); backface-visibility: hidden; }
+        .envelope-flap-top { top: 0; border-width: 48vh 50vw 0 50vw; border-color: #F0EAE1 transparent transparent transparent; transform-origin: top; z-index: 4; }
+        .envelope-flap-bottom { bottom: 0; border-width: 0 50vw 48vh 50vw; border-color: transparent transparent #E6DEC3 transparent; transform-origin: bottom; z-index: 2; }
+        .envelope-flap-left { top: 0; border-width: 50vh 0 50vh 50vw; border-color: transparent transparent transparent #EFE8DA; z-index: 1; }
+        .envelope-flap-right { top: 0; right: 0; left: auto; border-width: 50vh 50vw 50vh 0; border-color: transparent #EFE8DA transparent transparent; z-index: 1; }
+        
+        .center-group { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 5; transition: opacity 0.3s ease; }
+        .seal { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; box-shadow: 0 5px 20px rgba(0,0,0,0.15); margin-bottom: 20px; border: 2px solid rgba(180, 160, 130, 0.3); }
+        .view-text { font-size: 13px; color: #63152D; font-weight: 500; font-family: 'Cinzel', serif; text-transform: uppercase; letter-spacing: 2.5px; background-color: rgba(255, 255, 255, 0.9); padding: 8px 18px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border: 1px solid #D1C4B6; }
+
+        /* CONTENEDOR DE LA INVITACIÓN */
+        .invitation-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: opacity 0.8s ease 0.4s; z-index: 3; overflow-y: auto; -webkit-overflow-scrolling: touch; background-color: #ffffff; }
+        
+        .open .envelope-flap-top { transform: rotateX(-180deg); }
+        .open .envelope-flap-bottom { transform: rotateX(180deg); }
+        .open .center-group { opacity: 0; visibility: hidden; }
+        .open .invitation-wrapper { opacity: 1; visibility: visible; z-index: 20; }
         
         .main-container { 
             width: 100%; 
@@ -38,6 +58,7 @@
             flex-direction: column; 
             align-items: center; 
             background-color: #ffffff; 
+            margin: 0 auto;
         }
         
         .img-container { 
@@ -207,7 +228,7 @@
             border-radius: 25px; 
             text-align: center; 
             width: 55%; 
-            margin-top: 15px; /* Se cambió de -20px a 15px para bajar el botón */
+            margin-top: 15px; 
             margin-bottom: 25px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
             font-weight: bold;
@@ -219,9 +240,8 @@
             background-color: #8A2A46;
         }
 
-        /* Espaciado extra modificado para bajar el botón de hospedaje */
         .hospedaje-container .btn-guinda {
-            margin-top: 20px; /* Se ajustó un poco más abajo para que respire */
+            margin-top: 20px; 
             margin-bottom: 35px;
         }
 
@@ -279,6 +299,7 @@
             margin-bottom: 10px; 
             color: #63152D;
             letter-spacing: 1px;
+            text-align: left;
         }
 
         input[type="text"], textarea { 
@@ -322,7 +343,6 @@
             accent-color: #63152D; 
         }
 
-        /* Botón Enviar Rediseñado */
         .btn-enviar-guinda { 
             background-color: #63152D; 
             color: #ffffff; 
@@ -372,136 +392,164 @@
 </head>
 <body>
 
-    <div class="main-container">
-        <!-- Portada de la invitación -->
-        <div class="img-container"><img src="portada.jpg" alt="PORTADA"></div>
+<div class="fullscreen-wrapper">
 
-        <!-- REPRODUCTOR DE MÚSICA (Fondo Blanco) -->
-        <div class="music-section">
-            <div class="player">
-                <div class="title">Escucha mi canción</div>
-                <div class="controls">
-                    <div class="line">
-                        <div class="progress" id="progress"></div>
-                    </div>
-                    <button class="play" onclick="togglePlay()">
-                        <svg id="icon" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z"/>
-                        </svg>
-                    </button>
-                    <div class="line"></div>
-                </div>
-                <audio id="audio">
-                    <source src="https://regalalasestrellas.weebly.com/uploads/1/3/2/0/132094004/mrs_magic_-_strawberry_guy__piano_version___mp3cut.net_.mp3" type="audio/mpeg">
-                </audio>
-            </div>
+    <!-- SOBRE CREMA INTERACTIVO -->
+    <div class="envelope-container" id="envelope" onclick="openEnvelope()">
+        <div class="flap envelope-flap-top"></div>
+        <div class="flap envelope-flap-left"></div>
+        <div class="flap envelope-flap-right"></div>
+        <div class="flap envelope-flap-bottom"></div>
+
+        <div class="center-group">
+            <img src="https://i.imgur.com/6SmHttl.png" alt="Sello" class="seal">
+            <div class="view-text">Ver invitación</div>
         </div>
 
-        <!-- Bloque de imágenes intermedias -->
-        <div class="img-container"><img src="entrada.jpg" alt="ENTRADA"></div>
-        <div class="img-container"><img src="papas y padrinos.jpg" alt="PAPÁS Y PADRINOS"></div>
-        <div class="img-container"><img src="titulo.jpg" alt="TÍTULO"></div>
-        <div class="img-container"><img src="fecha.jpg" alt="FECHA"></div>
+        <!-- CONTENIDO DE LA INVITACIÓN DENTRO DEL SOBRE -->
+        <div class="invitation-wrapper">
+            <div class="main-container">
+                <!-- Portada de la invitación -->
+                <div class="img-container"><img src="portada.jpg" alt="PORTADA"></div>
 
-        <!-- CUENTA REGRESIVA (Fondo Blanco) -->
-        <div class="countdown-section">
-            <section>
-                <div class="countdown">
-                    <div class="block">
-                        <div id="days" class="number">00</div>
-                        <div class="label">DÍAS</div>
-                    </div>
-                    <div class="block">
-                        <div id="hours" class="number">00</div>
-                        <div class="label">HORAS</div>
-                    </div>
-                    <div class="block">
-                        <div id="minutes" class="number">00</div>
-                        <div class="label">MINUTOS</div>
-                    </div>
-                    <div class="block">
-                        <div id="seconds" class="number">00</div>
-                        <div class="label">SEGUNDOS</div>
+                <!-- REPRODUCTOR DE MÚSICA (Fondo Blanco) -->
+                <div class="music-section">
+                    <div class="player">
+                        <div class="title">Escucha mi canción</div>
+                        <div class="controls">
+                            <div class="line">
+                                <div class="progress" id="progress"></div>
+                            </div>
+                            <button class="play" onclick="togglePlay()">
+                                <svg id="icon" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </button>
+                            <div class="line"></div>
+                        </div>
+                        <audio id="audio">
+                            <source src="https://regalalasestrellas.weebly.com/uploads/1/3/2/0/132094004/mrs_magic_-_strawberry_guy__piano_version___mp3cut.net_.mp3" type="audio/mpeg">
+                        </audio>
                     </div>
                 </div>
-            </section>
-        </div>
 
-        <!-- SECCIÓN DE LA CEREMONIA -->
-        <div class="ubicaciones-wrapper">
-            <div class="img-container"><img src="ceremonia.jpg" alt="CEREMONIA"></div>
-            <a href="https://www.google.com/maps/place/Parroquia+El+Buen+Pastor/@28.6828369,-106.1232412,17z/data=!3m1!4b1!4m6!3m5!1s0x86ea425aac67dc39:0xf9353a0fe4462a4c!8m2!3d28.6828369!4d-106.1232412!16s%2Fg%2F1vrqb281?entry=ttu&g_ep=EgoyMDI2MDMwMi4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="btn-guinda">VER EN MAPA</a>
-        </div>
+                <!-- Bloque de imágenes intermedias -->
+                <div class="img-container"><img src="entrada.jpg" alt="ENTRADA"></div>
+                <div class="img-container"><img src="papas y padrinos.jpg" alt="PAPÁS Y PADRINOS"></div>
+                <div class="img-container"><img src="titulo.jpg" alt="TÍTULO"></div>
+                <div class="img-container"><img src="fecha.jpg" alt="FECHA"></div>
 
-        <!-- SECCIÓN DE LA RECEPCIÓN -->
-        <div class="ubicaciones-wrapper">
-            <div class="img-container"><img src="recepcion.jpg" alt="RECEPCIÓN"></div>
-            <a href="https://www.google.com/maps/place/Sal%C3%B3n+LC/@28.7326529,-106.1209925,17z/data=!3m1!4b1!4m6!3m5!1s0x86ea41130ca4331f:0x328ac12ff919f6a0!8m2!3d28.7326529!4d-106.1209925!16s%2Fg%2F11h_fqtpwm?entry=ttu&g_ep=EgoyMDI2MDMwMi4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="btn-guinda">VER EN MAPA</a>
-        </div>
+                <!-- CUENTA REGRESIVA (Fondo Blanco) -->
+                <div class="countdown-section">
+                    <section>
+                        <div class="countdown">
+                            <div class="block">
+                                <div id="days" class="number">00</div>
+                                <div class="label">DÍAS</div>
+                            </div>
+                            <div class="block">
+                                <div id="hours" class="number">00</div>
+                                <div class="label">HORAS</div>
+                            </div>
+                            <div class="block">
+                                <div id="minutes" class="number">00</div>
+                                <div class="label">MINUTOS</div>
+                            </div>
+                            <div class="block">
+                                <div id="seconds" class="number">00</div>
+                                <div class="label">SEGUNDOS</div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
 
-        <!-- SECCIÓN VESTIMENTA -->
-        <div class="img-container"><img src="vestimenta.jpg" alt="VESTIMENTA"></div>
+                <!-- SECCIÓN DE LA CEREMONIA -->
+                <div class="ubicaciones-wrapper">
+                    <div class="img-container"><img src="ceremonia.jpg" alt="CEREMONIA"></div>
+                    <a href="https://www.google.com/maps/place/Parroquia+El+Buen+Pastor/@28.6828369,-106.1232412,17z/data=!3m1!4b1!4m6!3m5!1s0x86ea425aac67dc39:0xf9353a0fe4462a4c!8m2!3d28.6828369!4d-106.1232412!16s%2Fg%2F1vrqb281?entry=ttu&g_ep=EgoyMDI2MDMwMi4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="btn-guinda">VER EN MAPA</a>
+                </div>
 
-        <!-- NUEVA UBICACIÓN: GALERÍA DE FOTOS -->
-        <div class="gallery-section">
-            <div class="slider-container">
-                <img src="https://i.imgur.com/7t1qNGR.jpeg" class="active" loading="eager">
-                <img src="https://i.imgur.com/6ODI2Nh.jpeg" loading="lazy">
-                <img src="https://i.imgur.com/VrlVrZJ.jpeg" loading="lazy">
-                <img src="https://i.imgur.com/LTbVBLc.jpeg" loading="lazy">
-                <img src="https://i.imgur.com/4i3wOgz.jpeg" loading="lazy">
-                <img src="https://i.imgur.com/RDjga40.jpeg" loading="lazy">
-            </div>
-        </div>
+                <!-- SECCIÓN DE LA RECEPCIÓN -->
+                <div class="ubicaciones-wrapper">
+                    <div class="img-container"><img src="recepcion.jpg" alt="RECEPCIÓN"></div>
+                    <a href="https://www.google.com/maps/place/Sal%C3%B3n+LC/@28.7326529,-106.1209925,17z/data=!3m1!4b1!4m6!3m5!1s0x86ea41130ca4331f:0x328ac12ff919f6a0!8m2!3d28.7326529!4d-106.1209925!16s%2Fg%2F11h_fqtpwm?entry=ttu&g_ep=EgoyMDI2MDMwMi4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="btn-guinda">VER EN MAPA</a>
+                </div>
 
-        <!-- SECCIÓN ITINERARIO -->
-        <div class="img-container"><img src="itinerario.jpg" alt="ITINERARIO"></div>
+                <!-- SECCIÓN VESTIMENTA -->
+                <div class="img-container"><img src="vestimenta.jpg" alt="VESTIMENTA"></div>
 
-        <!-- SECCIÓN REGALOS -->
-        <div class="img-container"><img src="regalos.jpg" alt="Regalos"></div>
-        
-        <!-- SECCIÓN HOSPEDAJE (Va directo después de Regalos) -->
-        <div class="ubicaciones-wrapper hospedaje-container">
-            <div class="img-container"><img src="hospedaje.jpg" alt="Hospedaje"></div>
-            <a href="https://www.google.com/maps?sca_esv=454c728905f0b91c&rlz=1C1CHBF_esMX838MX838&output=search&q=DOUBLETREE+BY+HILTON+-NORWALK+13111+Sycamore+Drive+Norwalk+CA.+90650&source=lnms&fbs=AIIjpHx4nJjfGojPVHhEACUHPiMQ888Yp7kQAgn2suUAOWN4gr_S9GlBEYq0W4Xv3oU6cIu_DZzwnkPPHty58iYDOubjCCM_ONoOxZbfM1AT1LJi_PTUmLxALXEzWGoUfIH-rRVG4rVdheo8_OsYL6fDmMp9QqDtkKBbUOvvawNIylT-_6g2CcU4MOWA4vNPtUmnbibXuEnyhEbsPamMuGcv1h-nCRicCw&entry=mc&ved=1t:200715&ictx=111" target="_blank" class="btn-guinda">VER UBICACIÓN</a>
-        </div>
+                <!-- GALERÍA DE FOTOS -->
+                <div class="gallery-section">
+                    <div class="slider-container">
+                        <img src="https://i.imgur.com/7t1qNGR.jpeg" class="active" loading="eager">
+                        <img src="https://i.imgur.com/6ODI2Nh.jpeg" loading="lazy">
+                        <img src="https://i.imgur.com/VrlVrZJ.jpeg" loading="lazy">
+                        <img src="https://i.imgur.com/LTbVBLc.jpeg" loading="lazy">
+                        <img src="https://i.imgur.com/4i3wOgz.jpeg" loading="lazy">
+                        <img src="https://i.imgur.com/RDjga40.jpeg" loading="lazy">
+                    </div>
+                </div>
 
-        <!-- CONFIRMACIÓN Y FORMULARIO -->
-        <div class="img-container"><img src="confirmacion.jpg" alt="Confirmación"></div>
+                <!-- SECCIÓN ITINERARIO -->
+                <div class="img-container"><img src="itinerario.jpg" alt="ITINERARIO"></div>
 
-        <div class="form-section">
-            <div class="container-form">
-                <div id="formContent">
-                    <form id="rsvpForm">
-                        <label class="titulo-form">Nombre del invitado</label>
-                        <input type="text" name="nombre" placeholder="Escribe tu nombre aquí" required>
+                <!-- SECCIÓN REGALOS -->
+                <div class="img-container"><img src="regalos.jpg" alt="Regalos"></div>
+                
+                <!-- SECCIÓN HOSPEDAJE -->
+                <div class="ubicaciones-wrapper hospedaje-container">
+                    <div class="img-container"><img src="hospedaje.jpg" alt="Hospedaje"></div>
+                    <a href="https://www.google.com/maps?sca_esv=454c728905f0b91c&rlz=1C1CHBF_esMX838MX838&output=search&q=DOUBLETREE+BY+HILTON+-NORWALK+13111+Sycamore+Drive+Norwalk+CA.+90650&source=lnms&fbs=AIIjpHx4nJjfGojPVHhEACUHPiMQ888Yp7kQAgn2suUAOWN4gr_S9GlBEYq0W4Xv3oU6cIu_DZzwnkPPHty58iYDOubjCCM_ONoOxZbfM1AT1LJi_PTUmLxALXEzWGoUfIH-rRVG4rVdheo8_OsYL6fDmMp9QqDtkKBbUOvvawNIylT-_6g2CcU4MOWA4vNPtUmnbibXuEnyhEbsPamMuGcv1h-nCRicCw&entry=mc&ved=1t:200715&ictx=111" target="_blank" class="btn-guinda">VER UBICACIÓN</a>
+                </div>
 
-                        <label class="titulo-form">¿Asistirás?</label>
-                        <div class="opciones">
-                            <label class="opcion-item">
-                                <input type="radio" name="asistencia" value="Será un placer asistir" checked> Será un placer asistir
-                            </label>
-                            <label class="opcion-item">
-                                <input type="radio" name="asistencia" value="Lo siento, no podré asistir"> Lo siento, no podré asistir
-                            </label>
+                <!-- CONFIRMACIÓN Y FORMULARIO -->
+                <div class="img-container"><img src="confirmacion.jpg" alt="Confirmación"></div>
+
+                <div class="form-section">
+                    <div class="container-form">
+                        <div id="formContent">
+                            <form id="rsvpForm">
+                                <label class="titulo-form">Nombre del invitado</label>
+                                <input type="text" name="nombre" placeholder="Escribe tu nombre aquí" required>
+
+                                <label class="titulo-form">¿Asistirás?</label>
+                                <div class="opciones">
+                                    <label class="opcion-item">
+                                        <input type="radio" name="asistencia" value="Será un placer asistir" checked> Será un placer asistir
+                                    </label>
+                                    <label class="opcion-item">
+                                        <input type="radio" name="asistencia" value="Lo siento, no podré asistir"> Lo siento, no podré asistir
+                                    </label>
+                                </div>
+
+                                <label class="titulo-form">Mensaje o dedicatoria (Opcional)</label>
+                                <textarea name="mensaje" rows="4" placeholder="Escribe un mensaje para los novios..."></textarea>
+
+                                <button type="submit" class="btn-enviar-guinda" id="btn">ENVIAR CONFIRMACIÓN</button>
+                            </form>
                         </div>
 
-                        <label class="titulo-form">Mensaje o dedicatoria (Opcional)</label>
-                        <textarea name="mensaje" rows="4" placeholder="Escribe un mensaje para los novios..."></textarea>
-
-                        <button type="submit" class="btn-enviar-guinda" id="btn">ENVIAR CONFIRMACIÓN</button>
-                    </form>
+                        <div id="exito-guinda">
+                            <h3>¡Muchas gracias!<br>Tu respuesta ha sido enviada con éxito.</h3>
+                        </div>
+                    </div>
                 </div>
 
-                <div id="exito-guinda">
-                    <h3>¡Muchas gracias!<br>Tu respuesta ha sido enviada con éxito.</h3>
-                </div>
             </div>
         </div>
-
     </div>
 
+</div>
+
     <script>
+        let isOpen = false;
+        function openEnvelope() {
+            if (!isOpen) {
+                isOpen = true;
+                document.getElementById('envelope').classList.add('open');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             
             // --- Lógica del Reproductor de Música ---
