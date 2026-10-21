@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mi Invitación</title>
+
+    <!-- METATAGS PARA MINIATURA DE WHATSAPP -->
+    <meta property="og:title" content="Mi Invitación">
+    <meta property="og:description" content="¡Estás invitado a mis XV! Haz click para ver los detalles.">
+    <meta property="og:image" content="miniatura.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="300">
+    <meta property="og:image:height" content="300">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #fcf8f7;
+            font-family: 'Cinzel', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* MARCO DE CELULAR ADAPTABLE */
+        .mobile-screen {
+            width: 100%;
+            max-width: 430px;
+            height: 100vh;
+            height: 100dvh;
+            position: relative;
+            background-color: #fcf8f7;
+            box-shadow: 0 0 30px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        /* SCROLL INTERIOR SIN BARRA VISIBLE */
+        .invitation-wrapper {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            background-color: #fcf8f7;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            scroll-behavior: smooth;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .invitation-wrapper.open-portada {
+            opacity: 1;
+        }
+
+        .invitation-wrapper::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+
+        /* ESTILOS DE IMÁGENES */
+        .image-section {
+            width: 100%;
+            background-color: #fcf8f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .image-section img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* PORTADA */
+        .portada-section {
+            min-height: 100vh;
+            min-height: 100dvh;
+            width: 100%;
+        }
+
+        .portada-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.9;
+            transform: translateY(0);
+            transition: transform 1.8s ease-out, opacity 1.8s ease-out;
+        }
+
+        .open-portada .portada-section img {
+            opacity: 1;
+            animation: floatPortada 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatPortada {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-6px) scale(1.005); }
+        }
+
+        /* ESTILOS DEL CONTADOR */
+        .contador-section {
+            width: 100%;
+            padding: 30px 15px 40px 15px;
+            text-align: center;
+            background-color: #fcf8f7;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .tiempo {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .unidad {
+            min-width: 70px;
+        }
+
+        .numero {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 50px;
+            line-height: 1;
+            color: #B78383;
+            font-weight: 500;
+        }
+
+        .texto {
+            margin-top: 7px;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #C59A9A;
+        }
+
+        .separador {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 40px;
+            color: #D2A7A7;
+            line-height: 1;
+            margin-top: 2px;
+        }
+
+        /* SECCIÓN BOTÓN DE UBICACIÓN */
+        .location-button-section {
+            width: 100%;
+            padding: 15px 20px 45px 20px;
+            background-color: #fcf8f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-location {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #f0c2c1 0%, #E5B0AF 50%, #d89e9d 100%);
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 15px rgba(229, 176, 175, 0.6), 0 0 25px rgba(229, 176, 175, 0.4);
+            animation: glowGlow 2.5s infinite alternate;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes glowGlow {
+            0% {
+                box-shadow: 0 4px 12px rgba(229, 176, 175, 0.5), 0 0 10px rgba(229, 176, 175, 0.3);
+            }
+            100% {
+                box-shadow: 0 6px 20px rgba(229, 176, 175, 0.9), 0 0 28px rgba(229, 176, 175, 0.6);
+            }
+        }
+
+        .btn-location:active {
+            transform: scale(0.96);
+        }
+
+        .btn-location svg {
+            width: 16px;
+            height: 16px;
+            fill: #ffffff;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+        }
+
+        /* POSICIONAMIENTO DEL BOTÓN DE REGALO DE AMAZON */
+        .gift-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .btn-amazon-overlay {
+            position: absolute;
+            top: 66%;
+            right: 12%;
+            transform: translateY(-50%);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f0c2c1 0%, #E5B0AF 50%, #d89e9d 100%);
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 12px rgba(229, 176, 175, 0.8);
+            animation: glowGlow 2.5s infinite alternate;
+            transition: all 0.3s ease;
+            z-index: 5;
+        }
+
+        .btn-amazon-overlay:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        /* SECCIÓN DE ITINERARIO INTERACTIVO */
+        .itinerario-container {
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 25px 15px 35px;
+            font-family: "Cinzel", Georgia, serif;
+            background-color: #fcf8f7;
+        }
+
+        .itinerario {
+            position: relative;
+            width: 100%;
+        }
+
+        .evento {
+            display: grid;
+            grid-template-columns: 1fr 34px 1fr;
+            align-items: center;
+            min-height: 105px;
+            position: relative;
+        }
+
+        .linea {
+            height: 100%;
+            min-height: 105px;
+            width: 1px;
+            background: rgba(132, 106, 82, 0.38);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+
+        .punto {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #846a52;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.9);
+        }
+
+        .contenido {
+            display: flex;
+            align-items: center;
+            min-height: 105px;
+        }
+
+        .contenido.izquierda {
+            justify-content: flex-end;
+            padding-right: 28px;
+        }
+
+        .contenido.derecha {
+            justify-content: flex-start;
+            padding-left: 28px;
+        }
+
+        .icono {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .icono img {
+            width: 43px;
+            height: 43px;
+            object-fit: contain;
+            display: block;
+            opacity: 0.72;
+            filter: sepia(12%);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .icono:hover img {
+            transform: scale(1.08);
+            opacity: 1;
+        }
+
+        .texto-itinerario {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 180px;
+        }
+
+        .texto-izquierda {
+            text-align: right;
+            align-items: flex-end;
+        }
+
+        .hora {
+            font-family: "Cinzel", Georgia, serif;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            color: #765640;
+            line-height: 1.2;
+        }
+
+        .momento {
+            font-family: "Cinzel", Georgia, serif;
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            color: #665b54;
+        }
+
+        /* ESTILOS DEL CARRUSEL DE FOTOS */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+            border-radius: 0;
+        }
+
+        .slider-container img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+            border-radius: 0;
+        }
+
+        .slider-container img.active {
+            opacity: 1;
+        }
+
+        /* ANIMACIÓN DE ENTRADA GENERAL AL HACER SCROLL */
+        .reveal-section {
+            opacity: 0;
+            transform: translateY(40px) scale(0.97);
+            transition: opacity 1.4s ease-out, transform 1.4s ease-out;
+        }
+
+        .reveal-section.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* ANIMACIÓN ESPECIAL DE ENTRADA PARA LA GALERÍA Y CARRUSEL */
+        .gallery-reveal {
+            opacity: 0;
+            transform: translateY(60px) scale(0.88);
+            transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1), transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .gallery-reveal.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* ESTILOS DEL NUEVO FORMULARIO DE ASISTENCIA Y PASE */
+        .rsvp-container-wrapper {
+            width: 100%;
+            background-color: #fcf8f7;
+            padding: 10px 20px 60px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .tarjeta-asistencia {
+            width: 100%;
+            background: rgba(255,255,255,.94);
+            border: 1px solid #d5ad65;
+            border-radius: 25px;
+            padding: 35px 28px;
+            box-shadow: 0 15px 45px rgba(128,72,89,.15);
+            font-family: 'Montserrat', sans-serif;
+            color: #5d424a;
+        }
+
+        .grupo {
+            margin-bottom: 24px;
+        }
+
+        .etiqueta {
+            display: block;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            color: #9c6d28;
+            margin-bottom: 9px;
+        }
+
+        .tarjeta-asistencia input[type="text"] {
+            width: 100%;
+            padding: 14px 15px;
+            border-radius: 12px;
+            border: 1px solid #e0bdc7;
+            background: #fffafb;
+            outline: none;
+            font-family: 'Montserrat', sans-serif;
+            color: #5d424a;
+            font-size: 14px;
+        }
+
+        .opciones {
+            display: flex;
+            gap: 12px;
+        }
+
+        .opcion {
+            flex: 1;
+        }
+
+        .opcion input {
+            display: none;
+        }
+
+        .opcion label {
+            display: block;
+            text-align: center;
+            padding: 13px 8px;
+            border: 1px solid #e0bdc7;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 13px;
+            background: #fffafb;
+            transition: .2s;
+        }
+
+        .opcion input:checked + label {
+            background: #f2d5dc;
+            border-color: #bd8d3e;
+            color: #815d20;
+            font-weight: 600;
+        }
+
+        .boton-confirmar {
+            width: 100%;
+            border: 0;
+            border-radius: 30px;
+            padding: 16px;
+            background: linear-gradient(135deg, #c49a4d, #e0bd70, #b98536);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .boton-confirmar:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        .mensaje {
+            display: none;
+            text-align: center;
+            margin-top: 25px;
+            padding: 18px;
+            border-radius: 15px;
+            background: #fff6f8;
+            border: 1px solid #e5c3ca;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .mensaje.visible {
+            display: block;
+        }
+
+        .pase {
+            display: none;
+            margin-top: 25px;
+        }
+
+        .pase.visible {
+            display: block;
+        }
+
+        #contenidoPase {
+            position: relative;
+            width: 100%;
+            padding: 42px 25px;
+            text-align: center;
+            border: 2px solid #c9a154;
+            border-radius: 24px;
+            background: linear-gradient(145deg, #fffdfd, #fff7f9, #fdf0f3);
+            box-shadow: 0 10px 30px rgba(128,72,89,.12);
+        }
+
+        #contenidoPase::before {
+            content: "✦";
+            display: block;
+            font-size: 18px;
+            color: #c9a154;
+            margin-bottom: 8px;
+        }
+
+        .pase-titulo {
+            font-family: 'Cormorant Garamond', serif;
+            color: #a77b2f;
+            font-size: 38px;
+            font-weight: 600;
+            margin: 0 0 18px;
+        }
+
+        .pase-nombre {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            font-weight: 500;
+            color: #66434d;
+            margin: 18px 0 25px;
+            line-height: 1.25;
+        }
+
+        .pase-linea {
+            width: 90px;
+            height: 1px;
+            background: #d4b477;
+            margin: 0 auto 22px;
+        }
+
+        .codigo {
+            display: inline-block;
+            font-size: 27px;
+            font-weight: 600;
+            letter-spacing: 7px;
+            color: #9c6d28;
+            padding: 10px 18px;
+            border-top: 1px solid #d4b477;
+            border-bottom: 1px solid #d4b477;
+        }
+
+        .codigo-texto {
+            margin-top: 12px;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #9b7c83;
+        }
+
+        .boton-descargar {
+            width: 100%;
+            border: 1px solid #d8aab7;
+            border-radius: 30px;
+            padding: 14px 20px;
+            margin-top: 16px;
+            background: linear-gradient(135deg, #e9b9c5, #f2cbd3, #dfabb9);
+            color: #6f4b55;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(170,105,120,.15);
+            transition: all .2s ease;
+        }
+
+        .boton-descargar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 7px 18px rgba(170,105,120,.22);
+        }
+
+        /* SOBRE DE INVITACIÓN DE ALTURA COMPLETA */
+        .envelope-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
+            cursor: pointer;
+            perspective: 1200px;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fcf8f7;
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('sobre.jpg');
+            background-size: cover;
+            background-position: center;
+            backface-visibility: hidden;
+            transition: transform 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .envelope-flap-top {
+            clip-path: polygon(0 0, 100% 0, 50% 50%);
+            transform-origin: top;
+            z-index: 5;
+        }
+
+        .envelope-flap-bottom {
+            clip-path: polygon(0 100%, 100% 100%, 50% 50%);
+            transform-origin: bottom;
+            z-index: 3;
+        }
+
+        .envelope-flap-left {
+            clip-path: polygon(0 0, 0 100%, 50% 50%);
+            transform-origin: left;
+            z-index: 2;
+        }
+
+        .envelope-flap-right {
+            clip-path: polygon(100% 0, 100% 100%, 50% 50%);
+            transform-origin: right;
+            z-index: 2;
+        }
+
+        /* BOTÓN EN EL SOBRE */
+        .center-group {
+            position: absolute;
+            top: 61.5%;
+            left: 66%;
+            transform: translate(-50%, -50%);
+            z-index: 6;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .view-text {
+            font-size: 11px;
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            background: rgba(186, 122, 116, 0.55);
+            padding: 8px 18px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(4px);
+            white-space: nowrap;
+        }
+
+        .open .envelope-flap-top { transform: rotateX(180deg); }
+        .open .envelope-flap-bottom { transform: rotateX(-180deg); }
+        .open .envelope-flap-left { transform: rotateY(-180deg); }
+        .open .envelope-flap-right { transform: rotateY(180deg); }
+
+        .open .center-group {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.85);
+            visibility: hidden;
+        }
+
+        .open.envelope-container {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 1.2s ease 1s, visibility 1.2s ease 1s;
+        }
+
+        @media (max-width: 480px) {
+            .tarjeta-asistencia { padding: 30px 20px; }
+            #contenidoPase { padding: 35px 18px; }
+            .pase-titulo { font-size: 34px; }
+            .pase-nombre { font-size: 25px; }
+            .codigo { font-size: 23px; letter-spacing: 5px; }
+
+            .itinerario-container {
+                padding: 20px 8px 30px;
+            }
+
+            .evento {
+                grid-template-columns: 1fr 28px 1fr;
+                min-height: 100px;
+            }
+
+            .linea {
+                min-height: 100px;
+            }
+
+            .contenido.izquierda {
+                padding-right: 18px;
+            }
+
+            .contenido.derecha {
+                padding-left: 18px;
+            }
+
+            .icono {
+                width: 42px;
+                height: 42px;
+            }
+
+            .icono img {
+                width: 38px;
+                height: 38px;
+            }
+
+            .hora {
+                font-size: 15px;
+            }
+
+            .momento {
+                font-size: 15px;
+            }
+
+            .texto-itinerario {
+                max-width: 135px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="mobile-screen">
+
+    <!-- AUDIO CON EL NOMBRE 'cancion.mp3' -->
+    <audio id="bg-music" src="cancion.mp3" loop></audio>
+
+    <div class="invitation-wrapper" id="invitation">
+
+        <!-- 1. FOTO DE PORTADA -->
+        <div class="image-section portada-section">
+            <img src="portada.jpg" alt="Portada">
+        </div>
+
+        <!-- 2. FOTO DE FECHA -->
+        <div class="image-section reveal-section">
+            <img src="fecha.jpg" alt="Fecha">
+        </div>
+
+        <!-- 3. CONTADOR DE TIEMPO -->
+        <div class="contador-section reveal-section">
+            <div class="tiempo">
+                <div class="unidad">
+                    <div class="numero" id="dias">00</div>
+                    <div class="texto">Días</div>
+                </div>
+
+                <div class="separador">:</div>
+
+                <div class="unidad">
+                    <div class="numero" id="horas">00</div>
+                    <div class="texto">Horas</div>
+                </div>
+
+                <div class="separador">:</div>
+
+                <div class="unidad">
+                    <div class="numero" id="minutos">00</div>
+                    <div class="texto">Minutos</div>
+                </div>
+
+                <div class="separador">:</div>
+
+                <div class="unidad">
+                    <div class="numero" id="segundos">00</div>
+                    <div class="texto">Segundos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. FOTO Y UBICACIÓN DE CEREMONIA -->
+        <div class="image-section reveal-section">
+            <img src="ceremonia.jpg" alt="Ceremonia">
+        </div>
+
+        <div class="location-button-section reveal-section">
+            <a href="https://www.google.com/maps/place/Parroquia+San+Antonio+de+Padua/@32.4438699,-117.0056605,17z/data=!4m15!1m8!3m7!1s0x80d937691d7cdc3b:0xc89a9a378f340f10!2sParroquia+San+Antonio+de+Padua!8m2!3d32.4439328!4d-117.0056809!10e5!16s%2Fg%2F1tlbpfk2!3m5!1s0x80d937691d7cdc3b:0xc89a9a378f340f10!8m2!3d32.4439328!4d-117.0056809!16s%2Fg%2F1tlbpfk2!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDkwNi4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" class="btn-location">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                Ver ubicación
+            </a>
+        </div>
+
+        <!-- 5. FOTO Y UBICACIÓN DE RECEPCIÓN -->
+        <div class="image-section reveal-section">
+            <img src="recepcion.jpg" alt="Recepción">
+        </div>
+
+        <div class="location-button-section reveal-section">
+            <a href="https://www.google.com/maps/place/Salon+Jardines+Del+Rey/@32.4459953,-117.0088409,17z/data=!4m15!1m8!3m7!1s0x80d9376fec4edf19:0x5fcb23ce60747258!2sSalon+Jardines+Del+Rey!8m2!3d32.4459953!4d-117.0088409!10e5!16s%2Fg%2F11dfhwrrj9!3m5!1s0x80d9376fec4edf19:0x5fcb23ce60747258!8m2!3d32.4459953!4d-117.0088409!16s%2Fg%2F11dfhwrrj9!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDkwNi4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" class="btn-location">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                Ver ubicación
+            </a>
+        </div>
+
+        <!-- 6. IMAGEN DE GALERÍA DE FOTOS -->
+        <div class="image-section gallery-reveal">
+            <img src="galeria.jpg" alt="Galería de Fotos">
+        </div>
+
+        <!-- 7. CARRUSEL DE FOTOS -->
+        <div class="gallery-reveal">
+            <div class="slider-container">
+                <img src="https://i.imgur.com/gyPclGg.jpeg" class="active">
+                <img src="https://i.imgur.com/qXdRjUa.jpeg">
+                <img src="https://i.imgur.com/XIYS6lY.jpeg">
+                <img src="https://i.imgur.com/Lit2QQG.jpeg">
+            </div>
+        </div>
+
+        <!-- 8. FOTO DE VESTIMENTA -->
+        <div class="image-section reveal-section">
+            <img src="vestimenta.jpg" alt="Vestimenta">
+        </div>
+
+        <!-- 9. FOTO DE REGALO CON BOTÓN DIRECTO A AMAZON -->
+        <div class="image-section reveal-section gift-container">
+            <img src="regalo.jpg" alt="Regalo">
+            <a href="https://www.amazon.com/registries/gl/guest-view/1UM7GE613Y1YK?ref_=cm_sw_r_apin_ggr-subnav-share_EPV382CMNTJCC411RC7Z" target="_blank" rel="noopener noreferrer" class="btn-amazon-overlay">
+                Da click aquí
+            </a>
+        </div>
+
+        <!-- 9B. FOTO DE LLUVIA DE SOBRES / LLUVIA -->
+        <div class="image-section reveal-section">
+            <img src="lluvia.jpg" alt="Lluvia">
+        </div>
+
+        <!-- 10. FOTO TÍTULO DE ITINERARIO -->
+        <div class="image-section reveal-section">
+            <img src="itinerario.jpg" alt="Itinerario">
+        </div>
+
+        <!-- 11. ITINERARIO INTERACTIVO -->
+        <section class="itinerario-container reveal-section">
+            <div class="itinerario">
+
+                <!-- 7:00 PM - RECEPCIÓN -->
+                <div class="evento">
+                    <div class="contenido izquierda">
+                        <div class="icono">
+                            <img src="https://i.imgur.com/xYHXeL9.png" alt="Recepción">
+                        </div>
+                    </div>
+                    <div class="linea">
+                        <span class="punto"></span>
+                    </div>
+                    <div class="contenido derecha">
+                        <div class="texto-itinerario">
+                            <span class="hora">7:00 PM</span>
+                            <span class="momento">Recepción</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8:00 PM  - CENA -->
+                <div class="evento">
+                    <div class="contenido izquierda">
+                        <div class="texto-itinerario texto-izquierda">
+                            <span class="hora">8:00 PM</span>
+                            <span class="momento">Cena</span>
+                        </div>
+                    </div>
+                    <div class="linea">
+                        <span class="punto"></span>
+                    </div>
+                    <div class="contenido derecha">
+                        <div class="icono">
+                            <img src="https://i.imgur.com/BzUQM62.png" alt="Cena">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 9:30 PM - BRINDIS -->
+                <div class="evento">
+                    <div class="contenido izquierda">
+                        <div class="icono">
+                            <img src="https://i.imgur.com/5iX5qn7.png" alt="Brindis">
+                        </div>
+                    </div>
+                    <div class="linea">
+                        <span class="punto"></span>
+                    </div>
+                    <div class="contenido derecha">
+                        <div class="texto-itinerario">
+                            <span class="hora">9:30 PM</span>
+                            <span class="momento">Brindis</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10:00 PM - VALS -->
+                <div class="evento">
+                    <div class="contenido izquierda">
+                        <div class="texto-itinerario texto-izquierda">
+                            <span class="hora">10:00 PM</span>
+                            <span class="momento">Vals</span>
+                        </div>
+                    </div>
+                    <div class="linea">
+                        <span class="punto"></span>
+                    </div>
+                    <div class="contenido derecha">
+                        <div class="icono">
+                            <img src="https://i.imgur.com/qb2QFsO.png" alt="Vals">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 12. FOTO DE HOSPEDAJE Y RECOMENDACIÓN DE PALACIO AZTECA -->
+        <div class="image-section reveal-section">
+            <img src="hospedaje.jpg" alt="Hospedaje">
+        </div>
+
+        <div class="image-section reveal-section">
+            <img src="reco.jpg" alt="Recomendación Hotel Palacio Azteca">
+        </div>
+
+        <div class="location-button-section reveal-section">
+            <a href="https://www.google.com/maps/place/Hotel+Palacio+Azteca/data=!4m2!3m1!1s0x0:0xe1d586fdb7e6334a?sa=X&ved=1t:2428&ictx=111" target="_blank" rel="noopener noreferrer" class="btn-location">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                Ver ubicación
+            </a>
+        </div>
+
+        <!-- 13. FOTO DE RECOMENDACIONES Y BOTÓN REAL INN -->
+        <div class="image-section reveal-section">
+            <img src="recom.jpg" alt="Recomendación Hotel Real Inn">
+        </div>
+
+        <div class="location-button-section reveal-section">
+            <a href="https://www.google.com/maps/place/Real+Inn/@32.524879,-117.0356194,15z/data=!3m1!5s0x80d9484446cfc26b:0xbd9e0aeccbb10dd!4m13!1m2!2m1!1sHotel+Real+Inn+Tijuana+%C2%B7+Tijuana,+Baja+California!3m9!1s0x80d9484446a4cc17:0x52f49dc4cbce8a57!5m2!4m1!1i2!8m2!3d32.524879!4d-117.016565!15sCjJIb3RlbCBSZWFsIElubiBUaWp1YW5hIMK3IFRpanVhbmEsIEJhamEgQ2FsaWZvcm5pYSIDiAEBkgEFaG90ZWzgAQA!16s%2Fg%2F1tg68d3y?entry=ttu&g_ep=EgoyMDI2MDkwNi4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" class="btn-location">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                Ver ubicación
+            </a>
+        </div>
+
+        <!-- 14. FOTO DE NIÑOS -->
+        <div class="image-section reveal-section">
+            <img src="ninos.jpg" alt="No Niños">
+        </div>
+
+        <!-- 15. FOTO DE ASISTENCIA -->
+        <div class="image-section reveal-section">
+            <img src="asistencia.jpg" alt="Asistencia">
+        </div>
+
+        <!-- 16. FORMULARIO Y GENERADOR DE PASE DE ENTRADA INTEGRADO -->
+        <div class="rsvp-container-wrapper reveal-section">
+            <div class="tarjeta-asistencia">
+                <div class="grupo">
+                    <label class="etiqueta">Nombre completo</label>
+                    <input id="nombre" type="text" placeholder="Nombre y dos apellidos" autocomplete="name">
+                </div>
+
+                <div class="grupo">
+                    <label class="etiqueta">Asistencia</label>
+                    <div class="opciones">
+                        <div class="opcion">
+                            <input type="radio" name="asistencia" id="si" value="SI">
+                            <label for="si">Sí asistiré</label>
+                        </div>
+                        <div class="opcion">
+                            <input type="radio" name="asistencia" id="no" value="NO">
+                            <label for="no">No asistiré</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="boton-confirmar" id="boton" onclick="enviar()">Enviar confirmación</button>
+
+                <div id="mensaje" class="mensaje"></div>
+
+                <!-- PASE DE ENTRADA -->
+                <div id="pase" class="pase"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SOBRE -->
+    <div class="envelope-container" id="envelope" onclick="openEnvelope()">
+        <div class="flap envelope-flap-top"></div>
+        <div class="flap envelope-flap-bottom"></div>
+        <div class="flap envelope-flap-left"></div>
+        <div class="flap envelope-flap-right"></div>
+
+        <div class="center-group">
+            <div class="view-text">
+                Ver invitación
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let isOpen = false;
+    const music = document.getElementById("bg-music");
+    const wrapper = document.getElementById("invitation");
+
+    function openEnvelope() {
+        if (!isOpen) {
+            isOpen = true;
+            document.getElementById("envelope").classList.add("open");
+            wrapper.classList.add("open-portada");
+            
+            var playPromise = music.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(function(error) {
+                    console.log("Reproducción bloqueada por el navegador:", error);
+                });
+            }
+
+            checkScroll();
+        }
+    }
+
+    function checkScroll() {
+        const reveals = document.querySelectorAll('.reveal-section, .gallery-reveal');
+        const triggerBottom = wrapper.clientHeight * 0.9;
+
+        reveals.forEach(section => {
+            const sectionTop = section.getBoundingClientRect().top;
+            if (sectionTop < triggerBottom) {
+                section.classList.add('visible');
+            }
+        });
+    }
+
+    wrapper.addEventListener('scroll', checkScroll);
+
+    /* LÓGICA DEL CARRUSEL DE IMÁGENES */
+    const images = document.querySelectorAll('.slider-container img');
+    let current = 0;
+
+    setInterval(() => {
+        images[current].classList.remove('active');
+        current = (current + 1) % images.length;
+        images[current].classList.add('active');
+    }, 3000);
+
+    /* LÓGICA DEL CONTADOR DE TIEMPO */
+    const fechaEvento = new Date("October 17, 2026 17:00:00").getTime();
+
+    function actualizarContador() {
+        const ahora = new Date().getTime();
+        const diferencia = fechaEvento - ahora;
+
+        if (diferencia <= 0) {
+            document.getElementById("dias").innerHTML = "00";
+            document.getElementById("horas").innerHTML = "00";
+            document.getElementById("minutos").innerHTML = "00";
+            document.getElementById("segundos").innerHTML = "00";
+            return;
+        }
+
+        const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+        const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutos = Math.floor((diferencia % (1000 * 60)) / (1000 * 60));
+        const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+
+        document.getElementById("dias").innerHTML = String(dias).padStart(2, "0");
+        document.getElementById("horas").innerHTML = String(horas).padStart(2, "0");
+        document.getElementById("minutos").innerHTML = String(minutos).padStart(2, "0");
+        document.getElementById("segundos").innerHTML = String(segundos).padStart(2, "0");
+    }
+
+    actualizarContador();
+    setInterval(actualizarContador, 1000);
+
+    /* LÓGICA DEL NUEVO FORMULARIO Y API DE PASES */
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxnKJbzJNotk5Qdb8UZ7rj_I9hbSbBuzEm8OvLzp4abrtk5oRgmfhNrwLJd_vOy6C_p/exec';
+
+    function llamarAPI(parametros) {
+        return new Promise((resolve, reject) => {
+            const callback = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 9999);
+            const script = document.createElement('script');
+            const query = new URLSearchParams({ ...parametros, callback });
+            const tiempo = setTimeout(() => { limpiar(); reject(); }, 15000);
+
+            window[callback] = function(data) {
+                clearTimeout(tiempo);
+                limpiar();
+                resolve(data);
+            };
+
+            function limpiar() {
+                delete window[callback];
+                if (script.parentNode) script.parentNode.removeChild(script);
+            }
+
+            script.onerror = function() {
+                clearTimeout(tiempo);
+                limpiar();
+                reject();
+            };
+
+            script.src = API_URL + '?' + query.toString();
+            document.body.appendChild(script);
+        });
+    }
+
+    async function enviar() {
+        const nombre = document.getElementById('nombre').value.trim();
+        const asistencia = document.querySelector('input[name="asistencia"]:checked')?.value || '';
+        const mensaje = document.getElementById('mensaje');
+        const pase = document.getElementById('pase');
+        const boton = document.getElementById('boton');
+
+        if (!nombre) {
+            mostrarMensaje('Escribe tu nombre completo.');
+            return;
+        }
+        if (nombre.split(/\s+/).length < 3) {
+            mostrarMensaje('Escribe tu nombre y tus dos apellidos.');
+            return;
+        }
+        if (!asistencia) {
+            mostrarMensaje('Selecciona tu asistencia.');
+            return;
+        }
+
+        boton.disabled = true;
+        boton.textContent = 'Enviando...';
+        mensaje.className = 'mensaje';
+        pase.className = 'pase';
+        pase.innerHTML = '';
+
+        try {
+            const respuesta = await llamarAPI({
+                accion: 'confirmar',
+                invitado1: nombre,
+                asistencia1: asistencia
+            });
+
+            if (!respuesta.ok) {
+                mostrarMensaje(respuesta.mensaje);
+                return;
+            }
+
+            if (asistencia === 'NO') {
+                mostrarMensaje('Lamentamos que no puedas acompañarnos, gracias por avisar.');
+                return;
+            }
+
+            mostrarMensaje(respuesta.mensaje || '¡Gracias por confirmar tu asistencia!');
+
+            if (respuesta.listaPases && respuesta.listaPases.length > 0) {
+                const p = respuesta.listaPases[0];
+                pase.className = 'pase visible';
+                pase.innerHTML = `
+                    <div id="contenidoPase">
+                        <div class="pase-titulo">Pase de entrada</div>
+                        <div class="pase-linea"></div>
+                        <div class="pase-nombre">${escapar(p.nombre)}</div>
+                        <div class="codigo">${escapar(p.codigo)}</div>
+                        <div class="codigo-texto">Código de acceso</div>
+                    </div>
+                    <button type="button" class="boton-descargar" onclick="descargarPase()">
+                        Descargar pase
+                    </button>
+                `;
+            }
+
+        } catch (error) {
+            console.error(error);
+            mostrarMensaje('No se pudo conectar con el sistema.');
+        } finally {
+            boton.disabled = false;
+            boton.textContent = 'Enviar confirmación';
+        }
+    }
+
+    function mostrarMensaje(texto) {
+        const mensaje = document.getElementById('mensaje');
+        mensaje.className = 'mensaje visible';
+        mensaje.textContent = texto;
+    }
+
+    async function descargarPase() {
+        const contenido = document.getElementById('contenidoPase');
+        if (!contenido) return;
+
+        const btn = document.querySelector('.boton-descargar');
+        btn.disabled = true;
+        btn.textContent = 'Preparando pase...';
+
+        try {
+            if (!window.html2canvas) {
+                await new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+            }
+
+            const canvas = await html2canvas(contenido, {
+                scale: 3,
+                backgroundColor: '#fffafb',
+                useCORS: true,
+                logging: false,
+                imageTimeout: 15000
+            });
+
+            canvas.toBlob(function(blob) {
+                if (!blob) throw new Error('No se pudo generar la imagen.');
+                const url = URL.createObjectURL(blob);
+                const enlace = document.createElement('a');
+                enlace.href = url;
+                enlace.download = 'Pase-' + obtenerNombreArchivo() + '.png';
+                document.body.appendChild(enlace);
+                enlace.click();
+                document.body.removeChild(enlace);
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+            }, 'image/png');
+
+        } catch (error) {
+            console.error(error);
+            alert('No se pudo descargar el pase. Intenta nuevamente.');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Descargar pase';
+        }
+    }
+
+    function obtenerNombreArchivo() {
+        const nombre = document.getElementById('nombre').value.trim();
+        return nombre
+            .replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]/g, '')
+            .replace(/\s+/g, '-')
+            .substring(0, 50) || 'Invitado';
+    }
+
+    function escapar(texto) {
+        return String(texto)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+</script>
+
+</body>
+</html>
